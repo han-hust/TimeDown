@@ -5,7 +5,7 @@
 typedef unsigned long time_t;
 
 enum Cmd {
-	CMD_VOID = 0, CMD_STOP1, CMD_STOP2, CMD_STOPBELL, CMD_RESET, CMD_ESC, CMD_READY, CMD_YES, CMD_BEGIN, CMD_SLEEP, CMD_GOTOZERO
+	CMD_VOID = 0, CMD_STOP1, CMD_STOP2, CMD_RESET, CMD_YES, CMD_ESC, CMD_READY, CMD_BEGIN, CMD_SLEEP, CMD_GOTOZERO, CMD_STOPBELL, CMD_TIME
 };
 
 enum Button {
@@ -128,8 +128,6 @@ public:
 
 class Manager {
 protected:
-	//state/button-cmd±í
-	//state/cmd-do±í
 	int state;
 	int defaultTime;
 	TimerBack *timer;
@@ -153,75 +151,175 @@ class Manager1 : public Manager {
 public:
 	Manager1() : Manager() {
 		defaultTime = DEFAULE_TIME1;
+		state = 1;
 	}
 
 	Cmd button2cmd(int button, int inter) {
-
-		switch (button)
-		{
-		case BUTTON_VOID:
-			break;
-		case BUTTON_STOP2:
-			switch (state)
+		if (inter == 1) {
+			switch (button)
 			{
-			case 3:
-				return CMD_STOP2;
+			case BUTTON_VOID:
 				break;
-			case 6:
-				return CMD_STOPBELL;
+			case BUTTON_STOP2:
+				switch (state)
+				{
+				case 3:
+					return CMD_STOP2;
+					break;
+				case 6:
+					return CMD_STOPBELL;
+					break;
+				}
+				break;
+			case BUTTON_STOP1:
+				return CMD_STOP1;
+				break;
+			case BUTTON_RESET:
+				switch (state)
+				{
+				case 4:
+					return CMD_RESET;
+					break;
+				case 5:
+					return CMD_ESC;
+					break;
+				}
+				break;
+			case BUTTON_INTERFACE:
+				break;
+			case BUTTON_TIME:
+				break;
+			case BUTTON_ESC:
+				return CMD_ESC;
+				break;
+			case BUTTON_YES:
+				switch (state)
+				{
+				case 1:
+					return CMD_READY;
+					break;
+				case 5:
+					return CMD_YES;
+					break;
+				}
+				break;
+			case BUTTON_BEGIN:
+				switch (state)
+				{
+				case 2:
+					return CMD_BEGIN;
+					break;
+				case 4:
+					return CMD_BEGIN;
+					break;
+				case 6:
+					return CMD_SLEEP;
+					break;
+				}
 				break;
 			}
+		}
+		return CMD_VOID;
+	}
+	void do_cmd(Cmd cmd) {
+
+		switch (cmd)
+		{
+		case CMD_VOID:
 			break;
-		case BUTTON_STOP1:
-			return CMD_STOP1;
+		case CMD_STOP1:
+			stop1();
 			break;
-		case BUTTON_RESET:
+		case CMD_STOP2:
+			stop2();
+			break;
+		case CMD_RESET:
+			wannaReset();
+			break;
+		case CMD_YES:
 			switch (state)
 			{
 			case 4:
-				return CMD_RESET;
-				break;
-			case 5:
-				return CMD_ESC;
+				stopped_yes();
 				break;
 			}
 			break;
-		case BUTTON_INTERFACE:
-			break;
-		case BUTTON_TIME:
-			break;
-		case BUTTON_ESC:
-			return CMD_ESC;
-			break;
-		case BUTTON_YES:
-			switch (state)
-			{
-			case 1:
-				return CMD_READY;
-				break;
-			case 5:
-				return CMD_YES;
-				break;
-			}
-			break;
-		case BUTTON_BEGIN:
+		case CMD_ESC:
 			switch (state)
 			{
 			case 2:
-				return CMD_BEGIN;
+				readyd_esc();
 				break;
-			case 4:
-				return CMD_BEGIN;
+			case 5:
+				wannaReset_esc();
 				break;
-			case 6:
-				return CMD_SLEEP;
-				break;
+
 			}
 			break;
+		case CMD_READY:
+			ready();
+			break;
+		case CMD_BEGIN:
+			begin();
+			break;
+		case CMD_SLEEP:
+			sleep();
+			break;
+		case CMD_GOTOZERO:
+			bell();
+			break;
+		case CMD_STOPBELL:
+			stopBell();
+			break;
+		case CMD_TIME:
+			break;
 		}
-		return CMD_VOID;
-	} //todo
-	void do_cmd(int cmd) {} //todo
+	}
+
+protected: // todo
+	void stop1() {
+	}
+
+	void stop2() {
+
+	}
+
+	void wannaReset() {
+
+	}
+
+	void stopped_yes() {
+
+	}
+
+	void readyd_esc() {
+
+	}
+
+	void wannaReset_esc() {
+
+	}
+
+	void ready() {
+
+	}
+
+	void begin() {
+
+	}
+
+	void sleep() {
+
+	}
+
+	void bell() {
+
+	}
+
+	void stopBell() {
+
+	}
+
 };
 
 class Manager2 : public Manager {
@@ -229,11 +327,89 @@ class Manager2 : public Manager {
 public:
 	Manager2() : Manager() {
 		defaultTime = DEFAULE_TIME2;
+		state = 2;
 	}
 
-	Cmd button2cmd(Button button, int inter) {
-	} //todo
-	void do_cmd(int cmd) {} //todo
+	Cmd button2cmd(Button button, int inter) { // Ä¿Ç°ÓÀÔ¶·µ»Ø¿ÕÃüÁî
+		if (inter == 2) {
+			switch (button)
+			{
+			case BUTTON_VOID:
+				break;
+			case BUTTON_STOP2:
+				break;
+			case BUTTON_STOP1:
+				break;
+			case BUTTON_RESET:
+				break;
+			case BUTTON_INTERFACE:
+				break;
+			case BUTTON_TIME:
+				break;
+			case BUTTON_ESC:
+				break;
+			case BUTTON_YES:
+				break;
+			case BUTTON_BEGIN:
+				break;
+			}
+		}
+		return CMD_VOID;
+	}
+	void do_cmd(Cmd cmd) {
+		switch (cmd)
+		{
+		case CMD_VOID:
+			break;
+		case CMD_STOP1:
+			break;
+		case CMD_STOP2:
+			stop();
+			break;
+		case CMD_RESET:
+			reset();
+			break;
+		case CMD_YES:
+			break;
+		case CMD_ESC:
+			break;
+		case CMD_READY:
+			break;
+		case CMD_BEGIN:
+			begin();
+			break;
+		case CMD_SLEEP:
+			break;
+		case CMD_GOTOZERO:
+			bell();
+			break;
+		case CMD_STOPBELL:
+			stopBell();
+			break;
+		case CMD_TIME:
+			break;
+		}
+	}
+protected: // todo
+	void stop() {
+
+	}
+
+	void reset() {
+
+	}
+
+	void begin() {
+
+	}
+
+	void bell() {
+
+	}
+
+	void stopBell() {
+
+	}
 };
 
 class Displayer {
@@ -250,10 +426,10 @@ void setup() {
 }
 
 void loop() {
-	digitalWrite(13, HIGH);   // turn the LED on (HIGH is the voltage level)
-	delay(100);              // wait for a second
-	digitalWrite(13, LOW);    // turn the LED off by making the voltage LOW
-	delay(100);              // wait for a second
+	digitalWrite(13, HIGH);
+	delay(100);
+	digitalWrite(13, LOW);
+	delay(100);
 	TimerBack *b = new TimerBack();
 	b->reset(100);
 	b->start();
