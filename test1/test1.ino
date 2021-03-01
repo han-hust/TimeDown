@@ -10,7 +10,7 @@ const int dio = 10;
 
 
 typedef unsigned long time_t;
-typedef long LightNum; // todo first
+typedef long LightNum;
 
 enum Cmd {
 	CMD_VOID = 0, CMD_STOP1, CMD_STOP2, CMD_RESET, CMD_YES, CMD_ESC, CMD_READY, CMD_BEGIN, CMD_SLEEP, CMD_GOTOZERO, CMD_STOPBELL, CMD_TIME
@@ -120,11 +120,6 @@ public:
 		}
 		return 0;
 	}
-};
-
-class Buttoner {
-public:
-	int getButton() {} //todo  about dev
 };
 
 class Controler {
@@ -682,6 +677,15 @@ public:
 };
 
 Dev *dev = new Dev();
+
+class Buttoner {
+public:
+	Button getButton() {
+		dev->getButton();
+	}
+};
+
+Buttoner *buttoner = new Buttoner();
 
 
 class Displayer {
