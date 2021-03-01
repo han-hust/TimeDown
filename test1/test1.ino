@@ -688,6 +688,9 @@ class Displayer {
 public:
 	void displayTime(time_t time) { //todo about dev
 		LightNum t = time / 1000;
+		//  t / 3600
+		//  t / 60 - t / 3600 * 60
+		//  t % 60
 		dev->display(t / 3600 * 10000 + (t / 60 - t / 3600 * 60) * 100 + t % 60);
 	}
 
@@ -697,6 +700,8 @@ public:
 };
 
 Displayer *displayer = new Displayer();
+TimerBack *timer1 = new TimerBack();
+
 
 void setup() {
 	pinMode(13, OUTPUT);
@@ -708,6 +713,8 @@ void setup() {
 	pinMode(clk, OUTPUT);
 	pinMode(dio, OUTPUT);
 	dev->reset();
+	
+	//Test
 
 }
 
@@ -740,7 +747,7 @@ void loop() {
 	*/
 
 	// Display Test
-	displayer->displayTime(millis());
+	displayer->displayTime(millis()*1000);
 
 
 }
