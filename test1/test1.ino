@@ -86,6 +86,7 @@ public:
 		return h * 10000 + m * 100 + s;
 	}
 };
+
 class TimerBack :public Timer {
 private:
 	int timeAdd = 0;
@@ -99,8 +100,8 @@ public:
 
 	void add(int timeAdd) {}
 
-	int getTime() {
-		return timeAll - Timer::getTime() / 1000 + timeAdd;
+	time_t getTime() {
+		return (time_t)timeAll * 1000 - Timer::getTime() + (time_t)timeAdd * 1000;
 	}
 
 	time_t getTimeMicro() {
@@ -109,7 +110,6 @@ public:
 		}
 		return 0;
 	}
-
 };
 
 class Buttoner {
@@ -532,7 +532,7 @@ void loop() {
 	TimerBack *b = new TimerBack();
 	b->reset(100);
 	b->start();
-	delay(2000);
+	delay(20);
 	Serial.print("hello : ");
 	Serial.print(b->getTime());
 	Serial.print(" * ");
