@@ -10,7 +10,7 @@ const int dio = 10;
 
 
 typedef unsigned long time_t;
-typedef long LightNum;
+typedef long LightNum; // todo first
 
 enum Cmd {
 	CMD_VOID = 0, CMD_STOP1, CMD_STOP2, CMD_RESET, CMD_YES, CMD_ESC, CMD_READY, CMD_BEGIN, CMD_SLEEP, CMD_GOTOZERO, CMD_STOPBELL, CMD_TIME
@@ -523,7 +523,7 @@ protected: // todo
 
 class Dev {
 private:
-	void writeByte(int value)     //write a byte.
+	void writeByte(int value)     // unclear
 	{
 		unsigned char i;
 		pinMode(dio, OUTPUT);
@@ -595,15 +595,15 @@ private:
 		digitalWrite(strobe, HIGH);
 	}
 
-	void showNumber(int number)
+	void showNumber(LightNum number)
 	{
-		const int digital[] = { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F };
-		int pos = 7;
+		const LightNum digital[] = { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F };
+		LightNum pos = 7;
 		while (pos >= 0) {
 			digitalWrite(strobe, LOW);
 			writeByte(0xc0 + pos * 2);
 			if (number > 0) {
-				int dig = number % 10;
+				LightNum dig = number % 10;
 				writeByte(digital[dig]);
 				number /= 10;
 			}
@@ -672,11 +672,8 @@ public:
 		return BUTTON_VOID;
 	}
 
-	void display(int dis) {
-		if (dis > 32000 || dis < 0)
-			showNumber(11111);
-		else
-			showNumber(dis);
+	void display(LightNum dis) {
+		showNumber(dis);
 	}
 
 	void led(int ledcode) {
@@ -690,11 +687,11 @@ Dev *dev = new Dev();
 class Displayer {
 public:
 	void displayTime(time_t time) { //todo about dev
-		int t = time / 1000;
+		LightNum t = time / 1000;
 		dev->display(t / 3600 * 10000 + (t / 60 - t / 3600 * 60) * 100 + t % 60);
 	}
 
-	void displayNum(int num) {
+	void displayNum(LightNum num) {
 		dev->display(num);
 	}
 };
