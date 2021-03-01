@@ -1,6 +1,6 @@
 #define DEFAULE_TIME1 4*60*60
 #define DEFAULE_TIME2 1*60*60
-#define HANTEST 1
+#define HANTEST true
 
 typedef unsigned long time_t;
 
@@ -228,19 +228,43 @@ public:
 		case CMD_VOID:
 			break;
 		case CMD_STOP1:
-			stop1();
+			switch (state)
+			{
+			case 3:
+				state = 4;
+				stop1();
+				break;
+			case 4:
+				state = 4;
+				stop1();
+				break;
+
+			}
 			break;
 		case CMD_STOP2:
-			stop2();
+			switch (state)
+			{
+			case 3:
+				state = 4;
+				stop2();
+				break;
+			}
 			break;
 		case CMD_RESET:
-			wannaReset();
+			switch (state)
+			{
+			case 4:
+				state = 5;
+				wannaReset();
+				break;
+			}
 			break;
 		case CMD_YES:
 			switch (state)
 			{
-			case 4:
-				stopped_yes();
+			case 5:
+				state = 1;
+				wannaReset_yes();
 				break;
 			}
 			break;
@@ -248,28 +272,65 @@ public:
 			switch (state)
 			{
 			case 2:
+				state = 1;
 				readyd_esc();
 				break;
 			case 5:
+				state = 4;
 				wannaReset_esc();
 				break;
 
 			}
 			break;
 		case CMD_READY:
-			ready();
+			switch (state)
+			{
+			case 1:
+				state = 2;
+				ready();
+				break;
+			}
 			break;
 		case CMD_BEGIN:
-			begin();
+			switch (state)
+			{
+			case 2:
+				state = 3;
+				begin();
+				break;
+			case 4:
+				state = 3;
+				begin();
+				break;
+
+			}
 			break;
 		case CMD_SLEEP:
-			sleep();
+			switch (state)
+			{
+			case 6:
+				state = 3;
+				sleep();
+				break;
+			}
 			break;
 		case CMD_GOTOZERO:
-			bell();
+			switch (state)
+			{
+			case 3:
+				state = 6;
+				bell();
+				break;
+			}
 			break;
 		case CMD_STOPBELL:
-			stopBell();
+			switch (state)
+			{
+			case 3:
+				state = 1;
+				stopBell();
+				break;
+			}
 			break;
 		case CMD_TIME:
 			break;
@@ -288,7 +349,7 @@ protected: // todo
 
 	}
 
-	void stopped_yes() {
+	void wannaReset_yes() {
 
 	}
 
@@ -439,4 +500,5 @@ void loop() {
 	Serial.print(" * ");
 	Serial.print(b->getTimeMicro());
 	Serial.print("\n");
+	delete b;
 }
