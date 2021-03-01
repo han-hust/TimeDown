@@ -525,37 +525,6 @@ public:
 	}
 };
 
-
-void setup() {
-	pinMode(13, OUTPUT);
-	Serial.begin(9600);
-}
-
-void loop() {
-
-	// Timer Test
-	/*
-	digitalWrite(13, HIGH);
-	delay(100);
-	digitalWrite(13, LOW);
-	delay(100);
-	TimerBack *b = new TimerBack();
-	b->reset(100);
-	b->start();
-	delay(20);
-	Serial.print("hello : ");
-	Serial.print(b->getTime());
-	Serial.print(" * ");
-	Serial.print(b->getTimeMicro());
-	Serial.print("\n");
-	delete b;
-	*/
-
-	// Dev Test
-	
-
-}
-
 class Dev {
 private:
 	void writeByte(int value)     //write a byte.
@@ -581,19 +550,6 @@ private:
 	{
 		digitalWrite(strobe, LOW);
 		writeByte(value);
-		digitalWrite(strobe, HIGH);
-	}
-
-	void reset()
-	{
-		sendCommand(0x8b); //set light,0x88-0x8f
-		sendCommand(0x40); // set auto increment mode
-		digitalWrite(strobe, LOW);
-		writeByte(0xc0);   // set starting address to 0
-		for (uint8_t i = 0; i < 16; i++)
-		{
-			writeByte(0x00);
-		}
 		digitalWrite(strobe, HIGH);
 	}
 
@@ -674,6 +630,20 @@ private:
 
 
 public:
+
+	void reset()
+	{
+		sendCommand(0x8b); //set light,0x88-0x8f
+		sendCommand(0x40); // set auto increment mode
+		digitalWrite(strobe, LOW);
+		writeByte(0xc0);   // set starting address to 0
+		for (uint8_t i = 0; i < 16; i++)
+		{
+			writeByte(0x00);
+		}
+		digitalWrite(strobe, HIGH);
+	}
+
 	Button getButton() {
 		int button = readButtons();
 		switch (button)
@@ -710,7 +680,51 @@ public:
 		showNumber(dis);
 	}
 
-	void led(Button button) {
-		buttonShowHAN((int)button);
+	void led(int ledcode) {
+		buttonShowHAN(ledcode);
 	}
 };
+
+Dev *dev = new Dev();
+
+void setup() {
+	pinMode(13, OUTPUT);
+	digitalWrite(VCC, LOW);
+	Serial.begin(9600);
+
+	// dev
+	pinMode(strobe, OUTPUT);
+	pinMode(clk, OUTPUT);
+	pinMode(dio, OUTPUT);
+	dev->reset();
+
+}
+
+void loop() {
+
+	// Timer Test
+	/*
+	digitalWrite(13, HIGH);
+	delay(100);
+	digitalWrite(13, LOW);
+	delay(100);
+	TimerBack *b = new TimerBack();
+	b->reset(100);
+	b->start();
+	delay(20);
+	Serial.print("hello : ");
+	Serial.print(b->getTime());
+	Serial.print(" * ");
+	Serial.print(b->getTimeMicro());
+	Serial.print("\n");
+	delete b;
+	*/
+
+	// Dev Test
+	for (int i = 1; i < 100000; i++) {
+		dev->display(i);
+		delay(1);
+	}
+
+
+}
