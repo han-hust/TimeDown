@@ -750,7 +750,7 @@ void setup() {
 	dev->reset();
 	
 	//Test
-	timer1->reset(60*60*2);
+	timer1->reset(60*60*1+10);
 	timer1->start();
 }
 
@@ -783,10 +783,8 @@ void loop() {
 	*/
 
 	// Display Test
-	displayer->displayNum(98765432);
-	delay(1000);
-	displayer->displayNum(76543210);
-	delay(1000);
+
+	displayer->displayTime(timer1->getTime());
 
 
 
