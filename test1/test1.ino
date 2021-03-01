@@ -2,8 +2,9 @@
 #define DEFAULE_TIME2 1*60*60
 #define HANTEST true
 
-// about dev
 #define VCC 13
+
+// dev
 const int strobe = 12;
 const int clk = 11;
 const int dio = 10;
@@ -721,7 +722,7 @@ Buttoner *buttoner = new Buttoner();
 
 class Displayer {
 public:
-	void displayTime(time_t time) { //todo about dev
+	void displayTime(time_t time) {
 		LightNum t = time / 1000;
 		//  t / 3600
 		//  t / 60 - t / 3600 * 60
