@@ -10,6 +10,7 @@ const int dio = 10;
 
 
 typedef unsigned long time_t;
+typedef long LightNum;
 
 enum Cmd {
 	CMD_VOID = 0, CMD_STOP1, CMD_STOP2, CMD_RESET, CMD_YES, CMD_ESC, CMD_READY, CMD_BEGIN, CMD_SLEEP, CMD_GOTOZERO, CMD_STOPBELL, CMD_TIME
@@ -108,7 +109,9 @@ public:
 	void add(int timeAdd) {}
 
 	time_t getTime() {
-		return (time_t)timeAll * 1000 - Timer::getTime() + (time_t)timeAdd * 1000;
+		time_t time_go = Timer::getTime();
+		time_t time_have = (time_t)timeAll * 1000 + (time_t)timeAdd * 1000;
+		return time_have > time_go ? time_have - time_go : 0;
 	}
 
 	time_t getTimeMicro() {
@@ -518,13 +521,6 @@ protected: // todo
 	}
 };
 
-class Displayer {
-public:
-	void display() { //todo about dev
-
-	}
-};
-
 class Dev {
 private:
 	void writeByte(int value)     //write a byte.
@@ -677,7 +673,10 @@ public:
 	}
 
 	void display(int dis) {
-		showNumber(dis);
+		if (dis > 32000 || dis < 0)
+			showNumber(11111);
+		else
+			showNumber(dis);
 	}
 
 	void led(int ledcode) {
@@ -686,6 +685,21 @@ public:
 };
 
 Dev *dev = new Dev();
+
+
+class Displayer {
+public:
+	void displayTime(time_t time) { //todo about dev
+		int t = time / 1000;
+		dev->display(t / 3600 * 10000 + (t / 60 - t / 3600 * 60) * 100 + t % 60);
+	}
+
+	void displayNum(int num) {
+		dev->display(num);
+	}
+};
+
+Displayer *displayer = new Displayer();
 
 void setup() {
 	pinMode(13, OUTPUT);
@@ -721,10 +735,15 @@ void loop() {
 	*/
 
 	// Dev Test
+	/*
 	for (int i = 1; i < 100000; i++) {
 		dev->display(i);
 		delay(1);
 	}
+	*/
+
+	// Display Test
+	displayer->displayTime(millis());
 
 
 }
