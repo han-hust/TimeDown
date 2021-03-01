@@ -425,10 +425,26 @@ public:
 		case CMD_STOP1:
 			break;
 		case CMD_STOP2:
-			stop();
+			switch (state)
+			{
+			case 3:
+				state = 4;
+				stop();
+				break;
+			}
 			break;
 		case CMD_RESET:
-			reset();
+			switch (state)
+			{
+			case 3:
+				state = 2;
+				reset();
+				break;
+			case 4:
+				state = 2;
+				reset();
+				break;
+			}
 			break;
 		case CMD_YES:
 			break;
@@ -437,15 +453,37 @@ public:
 		case CMD_READY:
 			break;
 		case CMD_BEGIN:
-			begin();
+			switch (state)
+			{
+			case 2:
+				state = 3;
+				begin();
+				break;
+			case 4:
+				state = 3;
+				begin();
+				break;
+			}
 			break;
 		case CMD_SLEEP:
 			break;
 		case CMD_GOTOZERO:
-			bell();
+			switch (state)
+			{
+			case 3:
+				state = 2;
+				bell();
+				break;
+			}
 			break;
 		case CMD_STOPBELL:
-			stopBell();
+			switch (state)
+			{
+			case 6:
+				state = 2;
+				stopBell();
+				break;
+			}
 			break;
 		case CMD_TIME:
 			break;
