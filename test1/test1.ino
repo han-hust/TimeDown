@@ -660,8 +660,31 @@ public:
 		digitalWrite(strobe, HIGH);
 	}
 
+	int getButton() {
+		return readButtons();
+	}
+
+	void displayTime(LightNum dis) {
+		showTime(dis);
+	}
+
+	void displayNum(LightNum dis) {
+		showNumber(dis);
+	}
+
+	
+
+	void led(int ledcode) {
+		buttonShowHAN(ledcode);
+	}
+};
+
+Dev *dev = new Dev();
+
+class Buttoner {
+public:
 	Button getButton() {
-		int button = readButtons();
+		int button = dev->getButton();
 		switch (button)
 		{
 		case 1:
@@ -690,29 +713,6 @@ public:
 			break;
 		}
 		return BUTTON_VOID;
-	}
-
-	void displayTime(LightNum dis) {
-		showTime(dis);
-	}
-
-	void displayNum(LightNum dis) {
-		showNumber(dis);
-	}
-
-	
-
-	void led(int ledcode) {
-		buttonShowHAN(ledcode);
-	}
-};
-
-Dev *dev = new Dev();
-
-class Buttoner {
-public:
-	Button getButton() {
-		dev->getButton();
 	}
 };
 
@@ -785,7 +785,6 @@ void loop() {
 	// Display Test
 
 	displayer->displayTime(timer1->getTime());
-
 
 
 }
