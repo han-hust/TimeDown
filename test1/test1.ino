@@ -610,6 +610,31 @@ private:
 		}
 	}
 
+	void showTime(LightNum number)
+	{
+		const LightNum digital_[] =  { 0x3F, 0x06, 0x5B, 0x4F, 0x66, 0x6D, 0x7D, 0x07, 0x7F, 0x6F };
+		const LightNum digital__[] = { 0xBF, 0x86, 0xDB, 0xCF, 0xE6, 0xED, 0xFD, 0x87, 0xFF, 0xEF };
+		
+		LightNum pos = 7;
+		while (pos >= 0) {
+			digitalWrite(strobe, LOW);
+			writeByte(0xc0 + pos * 2);
+			if (number > 0) {
+				LightNum dig = number % 10;
+				if (pos == 3 || pos == 5)
+					writeByte(digital__[dig]);
+				else
+					writeByte(digital_[dig]);
+				number /= 10;
+			}
+			else {
+				writeByte(0);
+			}
+			digitalWrite(strobe, HIGH);
+			pos--;
+		}
+	}
+
 	void buttonShowHAN(int buttons)
 	{
 		for (int position = 0; position < 8; position++)
@@ -667,9 +692,15 @@ public:
 		return BUTTON_VOID;
 	}
 
-	void display(LightNum dis) {
+	void displayTime(LightNum dis) {
+		showTime(dis);
+	}
+
+	void displayNum(LightNum dis) {
 		showNumber(dis);
 	}
+
+	
 
 	void led(int ledcode) {
 		buttonShowHAN(ledcode);
@@ -695,11 +726,11 @@ public:
 		//  t / 3600
 		//  t / 60 - t / 3600 * 60
 		//  t % 60
-		dev->display(t / 3600 * 10000 + (t / 60 - t / 3600 * 60) * 100 + t % 60);
+		dev->displayTime(t / 3600 * 10000 + (t / 60 - t / 3600 * 60) * 100 + t % 60);
 	}
 
 	void displayNum(LightNum num) {
-		dev->display(num);
+		dev->displayNum(num);
 	}
 };
 
@@ -746,13 +777,17 @@ void loop() {
 	// Dev Test
 	/*
 	for (int i = 1; i < 100000; i++) {
-		dev->display(i);
+		dev->displayTime(i);
 		delay(1);
 	}
 	*/
 
 	// Display Test
-	displayer->displayTime(timer1->getTime());
+	displayer->displayNum(98765432);
+	delay(1000);
+	displayer->displayNum(76543210);
+	delay(1000);
+
 
 
 }
